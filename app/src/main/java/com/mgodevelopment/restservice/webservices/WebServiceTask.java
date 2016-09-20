@@ -14,14 +14,14 @@ import org.json.JSONObject;
  * Created by Martin on 9/19/2016.
  */
 
-public class WebServiceTask extends AsyncTask<Void, Void, Boolean> {
+public abstract class WebServiceTask extends AsyncTask<Void, Void, Boolean> {
 
     private static final String TAG = WebServiceTask.class.getName();
 
     public abstract void showProgress();
     public abstract boolean performRequest();
     public abstract void performSuccessfulOperation();
-    public abstract void hidePrograss();
+    public abstract void hideProgress();
 
     private String mMessage;
     private Context mContext;
@@ -47,14 +47,12 @@ public class WebServiceTask extends AsyncTask<Void, Void, Boolean> {
             return performRequest();
         }
 
-        return null;
-
     }
 
     @Override
     protected void onPostExecute(Boolean success) {
 
-        hidePrograss();
+        hideProgress();
         if (success) {
             performSuccessfulOperation();
         }
@@ -67,7 +65,7 @@ public class WebServiceTask extends AsyncTask<Void, Void, Boolean> {
 
     @Override
     protected void onCancelled(Boolean aBoolean) {
-        hidePrograss();
+        hideProgress();
     }
 
     public boolean hasError(JSONObject obj) {

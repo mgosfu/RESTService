@@ -120,10 +120,10 @@ public class LoginRegisterActivity extends AppCompatActivity {
             LoginRegisterActivity.this.showProgress(true);
         }
 
-//        @Override
-//        public void hideProgress() {
-//            LoginRegisterActivity.this.showProgress(false);
-//        }
+        @Override
+        public void hideProgress() {
+            LoginRegisterActivity.this.showProgress(false);
+        }
 
         @Override
         public boolean performRequest() {

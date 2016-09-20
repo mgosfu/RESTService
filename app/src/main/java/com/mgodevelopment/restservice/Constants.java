@@ -7,16 +7,16 @@ public class Constants {
 
     // Constants for web connections
     public static final int CONNECTION_TIMEOUT = 10000;
-    public static final int READ_TIMEOUT = 10000;
+    public static final int READ_TIMEOUT = 100000;
     public static final int STATUS_ERROR = 400;
     public static final int STATUS_UNAUTHORIZED = 401;
 
     // Application key and secret that come from the server to access the API
-    public static final String APP_KEY = "TBA";
-    public static final String APP_SECRET = "TBA";
+    public static final String APP_KEY = "0deb5eeff03e41d0b4e7f0ff73589d7d";
+    public static final String APP_SECRET = "eb7b16f26175497fb8e40ebbf7942b2e";
 
     // URLs to be used to access the API
-    public static final String END_POINT = "YOURDOMAIN/api";
+    public static final String END_POINT = "http://www.beteljuiceproductions.com/api";
     public static final String LOGIN_URL = END_POINT + "/login.php";
     public static final String SIGNUP_URL = END_POINT + "/signup.php";
     public static final String INFO_URL = END_POINT + "/info.php";

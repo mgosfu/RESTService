@@ -53,7 +53,7 @@ public class WebServiceUtils {
         HttpURLConnection urlConnection = null;
         try {
             if (urlValues != null) {
-                serviceUrl = addParametersToURL(serviceUrl, urlValues);
+                serviceUrl = addParametersToUrl(serviceUrl, urlValues);
             }
 
             URL urlToRequest = new URL(serviceUrl);
@@ -134,7 +134,7 @@ public class WebServiceUtils {
     private static String convertInputStreamToString(InputStream inputStream) {
 
         StringBuilder stringBuilder = new StringBuilder();
-        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader((inputStream)));
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
         String responseText;
 
         try {
@@ -152,7 +152,7 @@ public class WebServiceUtils {
 
     }
 
-    private static String addParametersToURL(String url, ContentValues urlValues) {
+    private static String addParametersToUrl(String url, ContentValues urlValues) {
 
         StringBuffer stringBuffer = new StringBuffer(url);
         stringBuffer.append("?");
@@ -172,7 +172,7 @@ public class WebServiceUtils {
 
     private static void addBasicAuthentication(HttpURLConnection urlConnection) {
 
-        final String basicAuth = "Basic" + Base64.encodeToString((Constants.APP_KEY +
+        final String basicAuth = "Basic " + Base64.encodeToString((Constants.APP_KEY +
                 ":" + Constants.APP_SECRET).getBytes(), Base64.NO_WRAP);
         urlConnection.setRequestProperty(Constants.AUTHORIZATION, basicAuth);
 
@@ -180,7 +180,8 @@ public class WebServiceUtils {
 
     public static boolean hasInternetConnection(Context context) {
 
-        ConnectivityManager connectivityManager = ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE));
+        ConnectivityManager connectivityManager = ((ConnectivityManager)
+                context.getSystemService(Context.CONNECTIVITY_SERVICE));
         return connectivityManager != null &&
                 connectivityManager.getActiveNetworkInfo() != null &&
                 connectivityManager.getActiveNetworkInfo().isConnected();

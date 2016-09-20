@@ -21,7 +21,7 @@ public class WebServiceTask extends AsyncTask<Void, Void, Boolean> {
     public abstract void showProgress();
     public abstract boolean performRequest();
     public abstract void performSuccessfulOperation();
-    public abstract void hidePrograss;
+    public abstract void hidePrograss();
 
     private String mMessage;
     private Context mContext;

@@ -1,5 +1,7 @@
 package com.mgodevelopment.restservice;
 
+import android.content.ContentValues;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
@@ -7,7 +9,11 @@ import android.util.Patterns;
 import android.view.View;
 import android.widget.EditText;
 
-import static android.R.string.cancel;
+import com.mgodevelopment.restservice.data.User;
+import com.mgodevelopment.restservice.webservices.WebServiceTask;
+import com.mgodevelopment.restservice.webservices.WebServiceUtils;
+
+import org.json.JSONObject;
 
 public class LoginRegisterActivity extends AppCompatActivity {
 
@@ -92,6 +98,72 @@ public class LoginRegisterActivity extends AppCompatActivity {
         findViewById(R.id.login_progress).setVisibility(isShow ? View.VISIBLE : View.GONE);
         findViewById(R.id.login_form).setVisibility(isShow ? View.GONE : View.VISIBLE);
 
+    }
+
+    private class UserLoginRegisterTask extends WebServiceTask {
+
+        private final ContentValues contentValues = new ContentValues();
+        private boolean mIsLogin;
+
+        UserLoginRegisterTask(String email, String password, boolean isLogin) {
+
+            super(LoginRegisterActivity.this);
+            contentValues.put(Constants.EMAIL, email);
+            contentValues.put(Constants.PASSWORD, password);
+            contentValues.put(Constants.GRANT_TYPE, Constants.CLIENT_CREDENTIALS);
+            mIsLogin = isLogin;
+
+        }
+
+        @Override
+        public void showProgress() {
+            LoginRegisterActivity.this.showProgress(true);
+        }
+
+//        @Override
+//        public void hideProgress() {
+//            LoginRegisterActivity.this.showProgress(false);
+//        }
+
+        @Override
+        public boolean performRequest() {
+
+            JSONObject obj = WebServiceUtils.requestJSONObject(mIsLogin ? Constants.LOGIN_URL : Constants.SIGNUP_URL,
+                    WebServiceUtils.METHOD.POST, contentValues, true);
+            mUserLoginRegisterTask = null;
+
+            if (!hasError(obj)) {
+                if (mIsLogin) {
+
+                    User user = new User();
+                    user.setId(obj.optLong(Constants.ID));
+                    user.setEmail(contentValues.getAsString(Constants.EMAIL));
+                    user.setPassword(contentValues.getAsString(Constants.PASSWORD));
+                    RESTServiceApplication.getInstance().setUser(user);
+                    RESTServiceApplication.getInstance().setAccessToken(obj.optJSONObject(Constants.ACCESS).optString(Constants.ACCESS_TOKEN));
+                    return true;
+
+                } else {
+
+                    mIsLogin = true;
+                    performRequest();
+                    return true;
+
+                }
+            } else {
+                return false;
+            }
+
+        }
+
+        @Override
+        public void performSuccessfulOperation() {
+
+            Intent intent = new Intent(LoginRegisterActivity.this, MainActivity.class);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK);
+            startActivity(intent);
+
+        }
     }
 
 }

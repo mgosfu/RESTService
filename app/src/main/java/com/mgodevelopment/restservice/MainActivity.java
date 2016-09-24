@@ -46,7 +46,7 @@ public class MainActivity extends AppCompatActivity {
     private void showProgress(final boolean isShow) {
 
         findViewById(R.id.progress).setVisibility(isShow ? View.VISIBLE : View.GONE);
-        findViewById(R.id.info_form).setVisibility(isShow ? View.VISIBLE : View.GONE);
+        findViewById(R.id.info_form).setVisibility(isShow ? View.GONE : View.VISIBLE);
 
     }
 
@@ -305,6 +305,11 @@ public class MainActivity extends AppCompatActivity {
             super(mUserDeleteTask);
         }
 
+        @Override
+        public void performSuccessfulOperation() {
+            showLoginScreen();
+        }
+
         public boolean performRequest() {
 
             ContentValues contentValues = new ContentValues();
@@ -313,7 +318,8 @@ public class MainActivity extends AppCompatActivity {
             contentValues.put(Constants.ACCESS_TOKEN,
                     RESTServiceApplication.getInstance().getAccessToken());
 
-            JSONObject obj = WebServiceUtils.requestJSONObject(Constants.DELETE_URL, WebServiceUtils.METHOD.POST, contentValues, null);
+            JSONObject obj = WebServiceUtils.requestJSONObject(Constants.DELETE_URL,
+                    WebServiceUtils.METHOD.DELETE, contentValues, null);
 
             if (!hasError(obj)) {
 

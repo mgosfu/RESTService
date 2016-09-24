@@ -1,5 +1,6 @@
 package com.mgodevelopment.restservice;
 
+import android.content.ContentValues;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
@@ -7,6 +8,10 @@ import android.widget.EditText;
 
 import com.mgodevelopment.restservice.data.User;
 import com.mgodevelopment.restservice.webservices.WebServiceTask;
+import com.mgodevelopment.restservice.webservices.WebServiceUtils;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -92,7 +97,41 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public boolean performRequest() {
-            return true;
+
+            ContentValues contentValues = new ContentValues();
+            User user = RESTServiceApplication.getInstance().getUser();
+            contentValues.put(Constants.ID, user.getId());
+            contentValues.put(Constants.ACCESS_TOKEN,
+                    RESTServiceApplication.getInstance().getAccessToken());
+
+            JSONObject obj = WebServiceUtils.requestJSONObject(Constants.INFO_URL, WebServiceUtils.METHOD.GET, contentValues, null);
+            if (!hasError(obj)) {
+
+                JSONArray jsonArray = obj.optJSONArray(Constants.INFO);
+                JSONObject jsonObject = jsonArray.optJSONObject(0);
+                user.setName(jsonObject.optString(Constants.NAME));
+                if (user.getName().equalsIgnoreCase("null"))
+                    user.setName(null);
+//                user.setPassword(jsonObject.optString(Constants.PASSWORD));
+//                if (user.getPassword().equalsIgnoreCase("null"))
+//                    user.setPassword(null);
+                user.setPhoneNumber(jsonObject.optString(Constants.PHONE_NUMBER));
+                if (user.getPhoneNumber().equalsIgnoreCase("null"))
+                    user.setPhoneNumber(null);
+                user.setNote(jsonObject.optString(Constants.NOTE));
+                if (user.getNote().equalsIgnoreCase("null"))
+                    user.setNote(null);
+//                user.setEmail(jsonObject.optString(Constants.EMAIL));
+//                if (user.getEmail().equalsIgnoreCase("null"))
+//                    user.setEmail(null);
+
+                user.setId(jsonObject.optLong(Constants.ID_INFO));
+                return true;
+
+            }
+
+            return false;
+
         }
 
     }
@@ -104,7 +143,33 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public boolean performRequest() {
-            return true;
+
+            ContentValues contentValues = new ContentValues();
+            User user = RESTServiceApplication.getInstance().getUser();
+            contentValues.put(Constants.ID, user.getId());
+            contentValues.put(Constants.NAME, mNameText.getText().toString());
+            contentValues.put(Constants.PASSWORD, mPasswordText.getText().toString());
+            contentValues.put(Constants.PHONE_NUMBER, mPhoneNumberText.getText().toString());
+            contentValues.put(Constants.NOTE, mNoteText.getText().toString());
+
+            ContentValues urlValues = new ContentValues();
+            urlValues.put(Constants.ACCESS_TOKEN, RESTServiceApplication.getInstance().getAccessToken());
+            JSONObject obj = WebServiceUtils.requestJSONObject(Constants.UPDATE_URL, WebServiceUtils.METHOD.POST, urlValues, contentValues);
+
+            if (!hasError(obj)) {
+
+                JSONArray jsonArray = obj.optJSONArray(Constants.INFO);
+                JSONObject jsonObject = jsonArray.optJSONObject(0);
+                user.setName(jsonObject.optString(Constants.NAME));
+                user.setPhoneNumber(jsonObject.optString(Constants.PHONE_NUMBER));
+                user.setNote(jsonObject.optString(Constants.NOTE));
+                user.setPassword(jsonObject.optString(Constants.PASSWORD));
+                return true;
+
+            }
+
+            return false;
+
         }
 
     }
@@ -116,7 +181,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public boolean performRequest() {
+
             return true;
+
         }
 
     }
@@ -128,7 +195,9 @@ public class MainActivity extends AppCompatActivity {
         }
 
         public boolean performRequest() {
+
             return true;
+
         }
 
     }
